@@ -1,7 +1,7 @@
 // import the express application and type definition
 import express, { Express } from "express";
 import morgan from "morgan";
-import ticketServicesRoutes from "./api/v1/routes/ticketServicesRoutes";
+import ticketRoutes from "./api/v1/routes/ticketRoute";
 
 // initialize the express application
 const app: Express = express();
@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 
 app.use(express.json());
 
-app.use("/api/v1/tickets", ticketServicesRoutes);
+app.use("/api/v1/tickets", ticketRoutes);
 
 /**
  * Health check endpoint that returns server status information
