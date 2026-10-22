@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUS } from 'src/constants/httpConstants';
 import * as ticketService from '../services/ticketService';
-import type { Ticket, TicketUrgency} from "../models/ticketModel"
+import type { Ticket, UrgencyTicket} from "../models/ticketModel"
 import { stat } from 'node:fs';
 
 export const createTicket = async(
@@ -133,6 +133,30 @@ export const deleteTicket = async (
         await ticketService.deleteTicket(id);
         res.status(HTTP_STATUS.OK).json({
             message: "Item deleted successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getTicketUrgency = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const id = Number(req.params.id);
+        const urgencyTicket: UrgencyTicket | null = await ticketService.getTicketUrgency(id);
+
+        if (!urgencyTicket) {
+            res.status(HTTP_STATUS.NOT_FOUND).json({
+            error: "Ticket not found",
+        });
+        return;
+    }
+        res.status(HTTP_STATUS.OK).json({
+            message: "Ticket urgency calculated",
+            data: urgencyTicket,
         });
     } catch (error) {
         next(error);
