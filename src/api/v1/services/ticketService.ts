@@ -17,9 +17,19 @@ export const createTicket = async (ticketData: CreateTicket): Promise<Ticket> =>
   return newTicket;
 };
 
-//export const getAllTickets = async (): 
+export const getAllTickets = async (): Promise<Ticket[]> => {
+  return structuredClone(tickets);
+};
 
-//export const getTicketById = async (): 
+export const getTicketById = async (id: number): Promise<Ticket> => {
+  const ticket = tickets.find((ticket: Ticket) => ticket.id === id);
+
+  if (!ticket) {
+    throw new Error(`Ticket with ID ${id} not found`);
+  }
+
+  return structuredClone(ticket);
+};
 
 export const updateTicket = async (
   id: number,
@@ -39,4 +49,12 @@ export const updateTicket = async (
   return structuredClone(tickets[index]);
 };
 
-//export const deleteTicket = async (): 
+export const deleteTicket = async (id: number): Promise<void> => {
+  const index: number = tickets.findIndex((ticket: Ticket) => ticket.id === id);
+
+  if (index === -1) {
+    throw new Error(`Ticket with ID ${id} not found`);
+  }
+
+  tickets.splice(index, 1);
+};
