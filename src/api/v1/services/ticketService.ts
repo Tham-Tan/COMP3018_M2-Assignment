@@ -3,18 +3,20 @@ import { CreateTicket, Ticket } from "../models/ticketModel";
 
 const tickets: Ticket[] = [];
 
+let nextId = 1;
+
 export const createTicket = async (ticketData: CreateTicket): Promise<Ticket> => {
   const newTicket: Ticket = {
-    id: tickets.length + 1,
+    id: nextId++,
     title: ticketData.title,
     description: ticketData.description,
     priority: ticketData.priority,
     status: "open",
-    createdAt: new Date()
-  }
+    createdAt: new Date(),
+  };
 
   tickets.push(newTicket);
-  return newTicket;
+  return structuredClone(newTicket);
 };
 
 export const getAllTickets = async (): Promise<Ticket[]> => {
