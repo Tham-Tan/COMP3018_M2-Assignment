@@ -5,7 +5,7 @@ import {
   getTicketById,
   updateTicket,
   deleteTicket,
-} from '../controllers/ticketServicesController';
+} from '../controllers/ticketController';
 
 const router = Router();
 
