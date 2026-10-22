@@ -1,5 +1,5 @@
 import { sampleTickets } from "src/data/sampleData";
-import { CreateTicket, Ticket } from "../models/ticketModel";
+import { CreateTicket, Ticket, UrgencyTicket } from "../models/ticketModel";
 
 const tickets: Ticket[] = [];
 
@@ -59,4 +59,57 @@ export const deleteTicket = async (id: number): Promise<void> => {
   }
 
   tickets.splice(index, 1);
+};
+
+export const getTicketUrgency = async (id: number) => {
+  const ticket = tickets.find(ticket => ticket.id === id);
+  if (!ticket) return null;
+
+  if (ticket.status === "resolved") {
+    return {
+      message: "Ticket urgency calculated",
+      id: ticket.id,
+      title: ticket.title,
+      priority: ticket.priority,
+      status: ticket.status,
+      createdAt: ticket.createdAt,
+      ticketAge: Math.floor((Date.now() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60 * 24)),
+      urgencyScore: 0,
+      urgencyLevel: "Minimal. Ticket resolved."
+    };
+  }
+
+  let urgencyScore = 0;
+  switch (ticket.priority) {
+    case "low": baseScore = 10; break;
+    case "medium": baseScore = 20; break;
+    case "high": baseScore = 30; break;
+    case "critical": baseScore = 50; break;
+  }
+
+  const ticketAge = Math.floor((Date.now() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+  urgencyScore += (ticketAge * 5);
+
+  let urgencyLevel = "";
+  if (urgencyScore >= 80) {
+    urgencyLevel = "Critical. Immediate attention required.";
+  } else if (urgencyScore >= 55) {
+    urgencyLevel = "High urgency. Prioritize resolution.";
+  } else if (urgencyScore >= 30) {
+    urgencyLevel = "Moderate. Schedule for attention.";
+  } else {
+    urgencyLevel = "Low urgency. Address when capacity allows.";
+  }
+
+  return {
+    message: "Ticket urgency calculated.",
+    id: ticket.id,
+    title: ticket.title,
+    priority: ticket.priority,
+    status: ticket.status,
+    createdAt: ticket.createdAt,
+    ticketAge: ticketAge,
+    urgencyScore: urgencyScore,
+    urgencyLevel: urgencyLevel
+  };
 };
